@@ -1,6 +1,8 @@
 # compiled output
 nest-backend/dist
 nest-backend/node_modules
+nest-backend/mongo
+nest-backend/.env
 notas.md
 
 # Logs
