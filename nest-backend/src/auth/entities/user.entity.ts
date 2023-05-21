@@ -1,11 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()
-export class User { //! apuntes 2
-
+export class User {
     _id?: string;
 
-    @Prop({ unique: true, required: true }) //! apuntes 3 prop, poner mas decoradores en los apuntes
+    @Prop({ unique: true, required: true })
     email: string;
 
     @Prop({ required: true })
@@ -21,6 +20,5 @@ export class User { //! apuntes 2
     roles: string[];
 
 }
-
 
 export const UserSchema = SchemaFactory.createForClass( User );
