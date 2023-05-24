@@ -18,7 +18,9 @@ export class AuthService {
   public currentUser = computed(() => this._currentUser());
   public authStatus = computed(() => this._authStatus());
 
-  constructor() { }
+  constructor() {
+    this.checkAuthStatus().subscribe();
+  }
 
   private setAuthentication(user: User, token: string): boolean {
 
@@ -39,9 +41,11 @@ export class AuthService {
     return this.http.post<LoginResponse>(url, body)
       .pipe(
         map(({ user, token }) => this.setAuthentication(user, token)),
-        catchError(err => throwError(() => err.error.message))
+        catchError(err => {
+          console.error(err); // Imprimir el error en la consola
+          return throwError(() => err.error.message);
+        })
       );
-
   }
 
 

@@ -18,8 +18,8 @@ export class LoginPageComponent {
 
 
   public myForm: FormGroup = this.fb.group({
-    email:    ['usuario@google.com', [ Validators.required, Validators.email ]],
-    password: ['123456', [ Validators.required, Validators.minLength(6) ]],
+    email:    ['juan22@gmail.com', [ Validators.required, Validators.email ]],
+    password: ['juan22', [ Validators.required, Validators.minLength(6) ]],
   });
 
 
