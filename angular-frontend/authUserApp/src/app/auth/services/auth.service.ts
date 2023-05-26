@@ -3,17 +3,18 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { environment } from 'src/environments/environments';
 import { AuthStatus, CheckTokenResponse, LoginResponse, User } from '../interfaces';
 import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
+import { RegisterResponse } from '../interfaces/register-response.inteface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private readonly baseUrl: string = environment.baseUrl; //! apuntes 1 como hacer peticiones
+  private readonly baseUrl: string = environment.baseUrl;
   private http = inject(HttpClient);;
 
   private _currentUser = signal<User | null>(null);
-  private _authStatus = signal<AuthStatus>(AuthStatus.checking); //! apuntes 2
+  private _authStatus = signal<AuthStatus>(AuthStatus.checking);
 
   public currentUser = computed(() => this._currentUser());
   public authStatus = computed(() => this._authStatus());
@@ -32,6 +33,20 @@ export class AuthService {
 
   }
 
+  register(name: string, email: string, password: string): Observable<boolean> {
+
+    const url = `${this.baseUrl}/auth/register`;
+    const body = {name, email, password };
+
+    return this.http.post<RegisterResponse>(url, body)
+      .pipe(
+        map(({ user, token }) => this.setAuthentication(user, token)),
+        catchError(err => {
+          console.error(err);
+          return throwError(() => err.error.message);
+        })
+      );
+  }
 
   login(email: string, password: string): Observable<boolean> {
 
@@ -42,14 +57,14 @@ export class AuthService {
       .pipe(
         map(({ user, token }) => this.setAuthentication(user, token)),
         catchError(err => {
-          console.error(err); // Imprimir el error en la consola
+          console.error(err);
           return throwError(() => err.error.message);
         })
       );
   }
 
 
-  checkAuthStatus(): Observable<boolean> { //! apuntes 7 linea por linea
+  checkAuthStatus(): Observable<boolean> {
 
     const url = `${this.baseUrl}/auth/check-token`;
     const token = localStorage.getItem('token');
@@ -59,15 +74,18 @@ export class AuthService {
       return of(false);
     }
 
-    const headers = new HttpHeaders() //! apuntes 6
+    // Crea los encabezados de la petición HTTP, incluyendo el token de autenticación.
+    const headers = new HttpHeaders()
       .set('Authorization', `Bearer ${token}`);
 
-
+    // Realiza una petición GET a la URL de verificación, incluyendo los encabezados.
     return this.http.get<CheckTokenResponse>(url, { headers })
       .pipe(
+        // Mapea la respuesta recibida para establecer la autenticación.
         map(({ user, token }) => this.setAuthentication(user, token)),
         catchError(() => {
           this._authStatus.set(AuthStatus.notAuthenticated);
+          // Retorna un Observable que emite "false".
           return of(false);
         })
       );
@@ -75,7 +93,7 @@ export class AuthService {
   }
 
   logout() {
-    
+
     localStorage.removeItem('token');
     this._currentUser.set(null);
     this._authStatus.set(AuthStatus.notAuthenticated);

@@ -3,8 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { AuthStatus } from '../interfaces';
 
-export const isAuthenticatedGuard: CanActivateFn = (route, state) => { //! apuntes 5 como ejemplo de guards y junto el otro guard
-
+export const isAuthenticatedGuard: CanActivateFn = (route, state) => { 
   const authService = inject( AuthService );
   const router      = inject( Router );
 

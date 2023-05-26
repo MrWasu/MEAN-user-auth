@@ -18,12 +18,12 @@ export class LoginPageComponent {
 
 
   public myForm: FormGroup = this.fb.group({
-    email:    ['juan22@gmail.com', [ Validators.required, Validators.email ]],
-    password: ['juan22', [ Validators.required, Validators.minLength(6) ]],
+    email:    ['', [ Validators.required, Validators.email ]],
+    password: ['', [ Validators.required, Validators.minLength(6) ]],
   });
 
 
-  login() { //!apuntes 4
+  login() {
     const { email, password } = this.myForm.value;
 
      this.authService.login(email, password)
