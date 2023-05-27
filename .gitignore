@@ -6,6 +6,8 @@ nest-backend/mongo
 nest-backend/.env
 notas.md
 
+screenshot.png
+
 # Logs
 logs
 *.log
